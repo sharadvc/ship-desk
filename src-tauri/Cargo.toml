@@ -1,12 +1,12 @@
 [package]
-name = "pi-desktop"
-version = "1.9.1"
-description = "Pi Desktop - A minimal coding agent desktop app"
-authors = ["Pi Desktop contributors"]
+name = "ship-desk"
+version = "0.1.0"
+description = "Ship Desk - talk, build, preview, and ship web projects"
+authors = ["Ship Desk contributors"]
 edition = "2021"
 
 [lib]
-name = "pi_desktop_lib"
+name = "ship_desk_lib"
 crate-type = ["lib", "cdylib", "staticlib"]
 
 [build-dependencies]

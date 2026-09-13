@@ -1,17 +1,17 @@
 {
-	"name": "pi-desktop",
-	"version": "1.9.1",
+	"name": "ship-desk",
+	"version": "0.1.0",
 	"private": true,
 	"type": "module",
-	"description": "Pi Desktop - A minimalist coding agent desktop app",
+	"description": "Ship Desk — talk, build, preview, and ship web projects to Vercel",
 	"license": "MIT",
-	"homepage": "https://github.com/gustavonline/pi-desktop",
+	"homepage": "https://github.com/sharadvc/ship-desk",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/gustavonline/pi-desktop.git"
+		"url": "https://github.com/sharadvc/ship-desk.git"
 	},
 	"bugs": {
-		"url": "https://github.com/gustavonline/pi-desktop/issues"
+		"url": "https://github.com/sharadvc/ship-desk/issues"
 	},
 	"scripts": {
 		"dev": "vite --port 1420",

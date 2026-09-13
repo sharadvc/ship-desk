@@ -10,6 +10,7 @@ use tauri::{AppHandle, Emitter, Manager, RunEvent};
 use tauri_plugin_fs::FsExt;
 
 mod pty;
+mod vercel;
 
 #[derive(Default)]
 struct RpcProcessHandle {
@@ -1956,6 +1957,9 @@ pub struct AppSettings {
     /// Feature flag: enable the remote SSH connection UI (off by default).
     #[serde(default)]
     pub ssh_enabled: Option<bool>,
+    /// Optional Vercel token for `vercel deploy` when CLI is not logged in.
+    #[serde(default)]
+    pub vercel_token: Option<String>,
 }
 
 impl Default for AppSettings {
@@ -1974,6 +1978,7 @@ impl Default for AppSettings {
             ssh: None,
             ssh_configs: None,
             ssh_enabled: None,
+            vercel_token: None,
         }
     }
 }
@@ -3519,6 +3524,11 @@ pub fn run() {
             test_provider_connection,
             test_ssh_connection,
             list_remote_sessions,
+            vercel::get_project_deploy_state,
+            vercel::get_vercel_setup_status,
+            vercel::vercel_ship_project,
+            vercel::open_project_preview,
+            vercel::open_external_url,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

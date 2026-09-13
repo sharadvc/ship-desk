@@ -5,6 +5,7 @@
 import { html, nothing, render, type TemplateResult } from "lit";
 import { fetchDesktopUpdateStatus, openDesktopUpdate, type DesktopUpdateStatus } from "../desktop-updates.js";
 import { setSshEnabled } from "../connection-state.js";
+import { invalidateVercelTokenCache } from "../deploy/deploy-service.js";
 import {
 	applyDesktopAppearanceProfileToRoot,
 	DEFAULT_APPEARANCE_PROFILES,
@@ -59,6 +60,7 @@ interface SettingsState {
 	steeringMode: QueueMode;
 	followUpMode: QueueMode;
 	piBinaryPath: string;
+	vercelToken: string;
 	connectionMode: "local" | "ssh";
 	sshHost: string;
 	sshUser: string;
@@ -110,6 +112,7 @@ export class SettingsPanel {
 		steeringMode: "one-at-a-time",
 		followUpMode: "one-at-a-time",
 		piBinaryPath: "",
+		vercelToken: "",
 		connectionMode: "local",
 		sshHost: "",
 		sshUser: "",
@@ -1217,6 +1220,7 @@ export class SettingsPanel {
 				ssh?: SshConnectionConfig | null;
 				ssh_configs?: SshSavedConfig[] | null;
 				ssh_enabled?: boolean | null;
+				vercel_token?: string | null;
 			};
 			if (saved.theme === "dark" || saved.theme === "light" || saved.theme === "system") {
 				this.state.theme = saved.theme;
@@ -1242,6 +1246,7 @@ export class SettingsPanel {
 			this.state.sshEnvPairs = Object.entries(ssh?.env ?? {}).map(([key, value]) => ({ key, value }));
 			this.state.sshSavedConfigs = Array.isArray(saved.ssh_configs) ? saved.ssh_configs : [];
 			this.state.sshEnabled = saved.ssh_enabled === true;
+			this.state.vercelToken = typeof saved.vercel_token === "string" ? saved.vercel_token : "";
 			setSshEnabled(this.state.sshEnabled);
 		} catch {
 			// ignore missing persisted settings
@@ -1899,8 +1904,10 @@ export class SettingsPanel {
 					ssh: activeSshOverride !== undefined ? activeSshOverride : (this.state.connectionMode === "ssh" ? this.buildSshConfigFromState() : null),
 					ssh_configs: this.state.sshSavedConfigs,
 					ssh_enabled: this.state.sshEnabled,
+					vercel_token: this.state.vercelToken.trim() || null,
 				},
 			});
+			invalidateVercelTokenCache();
 			if (this.settingsSaveError) {
 				this.settingsSaveError = "";
 				this.render();
@@ -2593,6 +2600,27 @@ export class SettingsPanel {
 									</button>
 								</div>
 								${this.piPathActionMessage ? html`<div class="settings-desc">${this.piPathActionMessage}</div>` : null}
+								<div class="settings-subsection" style="margin-top:18px;">
+									<div class="settings-section-title">Vercel</div>
+									<div class="settings-desc">
+										Optional. Used when the Vercel CLI is not logged in. Create a token at
+										<code>vercel.com/account/tokens</code> or run <code>vercel login</code> in Terminal.
+									</div>
+									<input
+										type="password"
+										class="settings-path-input"
+										placeholder="VERCEL_TOKEN (optional)"
+										.value=${this.state.vercelToken}
+										@input=${(e: Event) => {
+											this.state.vercelToken = (e.target as HTMLInputElement).value;
+										}}
+									/>
+									<div class="settings-actions" style="margin-top:8px;">
+										<button class="ghost-btn" ?disabled=${this.saving} @click=${() => void this.saveSettings()}>
+											Save Vercel token
+										</button>
+									</div>
+								</div>
 							`
 							: html`<div class="settings-desc">Binary path override is not used in SSH mode — the remote pi is discovered on the host.</div>`}
 						<div class="settings-actions">
