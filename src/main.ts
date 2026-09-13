@@ -49,6 +49,7 @@ import { isExtensionConfigIntent, normalizeExtensionCommandName } from "./extens
 import { ensureDesktopSdkCompatExtensionInstalled } from "./extensions/sdk-compat-extension.js";
 import { ensureSmartVoiceNotifyDesktopHostMode } from "./extensions/smart-voice-notify-config.js";
 import { joinFsPath } from "./utils/fs-paths.js";
+import { ShipDeskController } from "./ship-desk-controller.js";
 import "./styles/app.css";
 
 interface WorkspaceSessionTab {
@@ -168,6 +169,7 @@ let commandPalette: CommandPalette | null = null;
 let sessionBrowser: SessionBrowser | null = null;
 let shortcutsPanel: ShortcutsPanel | null = null;
 let extensionUiHandler: ExtensionUiHandler | null = null;
+let shipDeskController: ShipDeskController | null = null;
 
 let cliUpdateStatus: CliUpdateStatus | null = null;
 let desktopUpdateStatus: DesktopUpdateStatus | null = null;
@@ -2674,6 +2676,7 @@ function syncSidebarSelectionFromWorkspace(workspace: WorkspaceState | null = ge
 		}
 	}
 	sidebar.setTransientSessionDraft(null);
+	shipDeskController?.onProjectChanged();
 }
 
 function syncActiveChatRuntimeBinding(
@@ -3361,7 +3364,7 @@ async function initialize(): Promise<void> {
 	render(
 		html`
 			<div class="app-shell loading">
-				<div class="loading-view">Starting pi agent…</div>
+				<div class="loading-view">Starting Ship Desk…</div>
 			</div>
 		`,
 		app,
@@ -3408,6 +3411,26 @@ async function initialize(): Promise<void> {
 		chatView = new ChatView(chatContainer);
 		chatView.setProjectPath(null);
 		chatView.connect();
+		shipDeskController = new ShipDeskController({
+			getActiveProjectPath: () => {
+				const workspace = getActiveWorkspace();
+				if (!workspace) return null;
+				return getWorkspaceActiveProjectPath(workspace);
+			},
+			getActiveProjectName: () => {
+				const workspace = getActiveWorkspace();
+				if (!workspace?.activeProjectId) {
+					const path = workspace ? getWorkspaceActiveProjectPath(workspace) : null;
+					if (!path) return null;
+					return path.split(/[/\\]/).filter(Boolean).pop() ?? null;
+				}
+				return sidebar?.getProjectById(workspace.activeProjectId)?.name ?? null;
+			},
+			getChatView: () => chatView,
+			renderApp,
+		});
+		shipDeskController.mount();
+		void shipDeskController.onProjectChanged();
 		chatView.setOnStateChange((state) => {
 			const runtime = getActiveRuntime();
 			if (!runtime) {
@@ -4490,11 +4513,14 @@ function renderApp(): void {
 						<div id="content-tabs-container" data-tauri-drag-region></div>
 						<div id="chat-file-layout">
 							<div id="session-pane">
+								<div id="ship-desk-context-bar"></div>
 								<div id="chat-container"></div>
 								<div id="terminal-pane" class="hidden-pane"></div>
 							</div>
 							<div id="file-split-resize-handle" class="hidden-pane" title="Resize file panel"></div>
 							<div id="file-pane" class="hidden-pane"></div>
+							<div id="deploy-split-resize-handle" class="ship-desk-deploy-handle" title="Resize deploy panel"></div>
+							<div id="deploy-pane"></div>
 						</div>
 						<div id="packages-pane" class="hidden-pane"></div>
 						<div id="settings-pane" class="hidden-pane"></div>
@@ -5399,6 +5425,7 @@ function renderApp(): void {
 	ensureRunningSessionPoller();
 	syncWorkspaceTabsBar();
 	syncWorkspaceContextChrome(getActiveWorkspace());
+	shipDeskController?.mount();
 }
 
 function setupThemeSyncListeners(): void {
@@ -5417,6 +5444,7 @@ function setupThemeSyncListeners(): void {
 
 applyInitialTheme();
 applyWindowChrome();
+document.documentElement.classList.add("ship-desk");
 void applyNativeWindowVisualFixes();
 setupThemeSyncListeners();
 setupKeyboardShortcuts();

@@ -42,6 +42,7 @@ import {
 } from "../models/model-selection.js";
 import { isExtensionConfigIntent, normalizeExtensionCommandName } from "../extensions/extension-command-intent.js";
 import { renderComposerControlsView } from "./chat-view/composer-controls-view.js";
+import { renderComposerShipActionsView } from "./chat-view/composer-ship-actions-view.js";
 import {
 	renderComposerSkillDraftPillView,
 	renderPendingFileReferencesView,
@@ -485,6 +486,9 @@ export class ChatView {
 	private onOpenShortcuts: (() => void) | null = null;
 	private onQuitApp: (() => void) | null = null;
 	private onSelectWelcomeProject: ((projectId: string) => void) | null = null;
+	private onPreviewProject: (() => void | Promise<void>) | null = null;
+	private onShipProject: (() => void | Promise<void>) | null = null;
+	private shipDeskShipping = false;
 	private onPromptSubmitted: (() => void) | null = null;
 	private onRunStateChange: ((running: boolean) => void) | null = null;
 	private onOpenFile: ((filePath: string) => void) | null = null;
@@ -705,6 +709,19 @@ export class ChatView {
 
 	setOnSelectWelcomeProject(cb: (projectId: string) => void): void {
 		this.onSelectWelcomeProject = cb;
+	}
+
+	setOnPreviewProject(cb: (() => void | Promise<void>) | null): void {
+		this.onPreviewProject = cb;
+	}
+
+	setOnShipProject(cb: (() => void | Promise<void>) | null): void {
+		this.onShipProject = cb;
+	}
+
+	setShipDeskShipping(shipping: boolean): void {
+		this.shipDeskShipping = shipping;
+		this.render();
 	}
 
 	setWelcomeProjects(projects: Array<{ id: string; name: string; path: string }>, activeProjectId: string | null): void {
@@ -4785,7 +4802,7 @@ export class ChatView {
 								id="chat-input"
 								class="chat-input"
 								draggable="false"
-								placeholder=${interactionLocked ? (connectivityStatus || "Session not ready…") : "Describe the next change — type / for commands"}
+								placeholder=${interactionLocked ? (connectivityStatus || "Session not ready…") : "Message"}
 								rows="1"
 								?disabled=${interactionLocked}
 								.value=${this.inputText}
@@ -4798,7 +4815,15 @@ export class ChatView {
 							></textarea>
 						</div>
 						${this.renderSlashPalette(slashItems)}
-						${this.renderComposerControls(canSend, isStreaming, interactionLocked)}
+						<div class="composer-controls-row">
+							${this.renderComposerControls(canSend, isStreaming, interactionLocked)}
+							${renderComposerShipActionsView({
+								disabled: interactionLocked || !this.projectPath,
+								shipping: this.shipDeskShipping,
+								onPreview: () => this.onPreviewProject?.(),
+								onShip: () => this.onShipProject?.(),
+							})}
+						</div>
 					</div>
 
 					<div class="composer-under-row">

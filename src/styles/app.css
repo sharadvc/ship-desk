@@ -9864,3 +9864,246 @@ button:active:not(:disabled),
 	50% { opacity: 0.4; }
 }
 
+/* ── Ship Desk product shell ── */
+html.ship-desk #activity-rail {
+	display: none;
+}
+
+html.ship-desk #session-pane {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	flex: 1;
+}
+
+html.ship-desk #chat-container {
+	flex: 1;
+	min-height: 0;
+}
+
+html.ship-desk #deploy-pane {
+	width: var(--ship-desk-deploy-width, 280px);
+	min-width: 240px;
+	max-width: 360px;
+	flex-shrink: 0;
+	border-left: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+	background: var(--bg);
+	overflow: auto;
+}
+
+html.ship-desk .ship-desk-deploy-handle {
+	width: 4px;
+	cursor: col-resize;
+	flex-shrink: 0;
+	background: transparent;
+}
+
+html.ship-desk .ship-desk-deploy-handle:hover {
+	background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.ship-desk-context-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 16px 8px;
+	border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+	background: var(--bg);
+}
+
+.ship-desk-breadcrumb {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: var(--muted);
+}
+
+.ship-desk-crumb-active {
+	color: var(--text);
+	font-weight: 500;
+}
+
+.ship-desk-crumb-sep {
+	opacity: 0.55;
+}
+
+.ship-desk-context-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.ship-desk-preview-link {
+	border: none;
+	background: transparent;
+	color: #0a84ff;
+	font-size: 12px;
+	cursor: pointer;
+	padding: 0;
+}
+
+.ship-desk-live-pill {
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	color: #34c759;
+	border: 1px solid color-mix(in srgb, #34c759 45%, transparent);
+	border-radius: 999px;
+	padding: 2px 8px;
+}
+
+.deploy-panel {
+	padding: 18px 16px 20px;
+}
+
+.deploy-panel-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 12px;
+}
+
+.deploy-panel-title {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 650;
+	letter-spacing: -0.02em;
+}
+
+.deploy-panel-refresh {
+	border: none;
+	background: transparent;
+	color: var(--muted);
+	cursor: pointer;
+	font-size: 16px;
+}
+
+.deploy-panel-project {
+	font-size: 12px;
+	color: var(--muted);
+	margin-bottom: 14px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.deploy-kv-list {
+	margin: 0;
+	padding: 0;
+}
+
+.deploy-kv-row {
+	display: grid;
+	grid-template-columns: 88px 1fr;
+	gap: 8px;
+	padding: 10px 0;
+	border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+	font-size: 13px;
+}
+
+.deploy-kv-row dt {
+	margin: 0;
+	color: var(--muted);
+}
+
+.deploy-kv-row dd {
+	margin: 0;
+	color: var(--text);
+	word-break: break-word;
+}
+
+.deploy-status-ready {
+	color: #34c759;
+}
+
+.deploy-domain-muted {
+	color: var(--muted);
+}
+
+.deploy-connect-domain {
+	margin-top: 16px;
+	border: none;
+	background: transparent;
+	color: color-mix(in srgb, var(--muted) 85%, var(--text));
+	font-size: 13px;
+	padding: 0;
+	cursor: not-allowed;
+}
+
+.deploy-link-btn {
+	border: none;
+	background: transparent;
+	color: #0a84ff;
+	text-align: left;
+	padding: 0;
+	cursor: pointer;
+	font-size: 13px;
+}
+
+.deploy-panel-error {
+	margin-top: 14px;
+	padding: 10px 12px;
+	border-radius: 8px;
+	background: color-mix(in srgb, var(--danger) 12%, transparent);
+	color: var(--danger);
+	font-size: 12px;
+	line-height: 1.45;
+}
+
+.deploy-panel-message {
+	margin-top: 12px;
+	font-size: 12px;
+	color: var(--muted);
+}
+
+.deploy-panel-empty {
+	font-size: 12px;
+	color: var(--muted);
+	margin-bottom: 12px;
+}
+
+.composer-controls-row {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.composer-ship-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+}
+
+.composer-preview-btn,
+.composer-ship-btn {
+	height: 32px;
+	padding: 0 14px;
+	border-radius: 8px;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.composer-preview-btn {
+	border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+	background: color-mix(in srgb, var(--bg-soft) 80%, transparent);
+	color: var(--text);
+}
+
+.composer-ship-btn {
+	border: 1px solid #0a84ff;
+	background: #0a84ff;
+	color: #fff;
+}
+
+.composer-preview-btn:disabled,
+.composer-ship-btn:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+

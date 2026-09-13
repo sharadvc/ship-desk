@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.shipdesk.app</id>
+  <name>Ship Desk</name>
+  <summary>Talk, build, preview, and ship web projects</summary>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <developer_name>Ship Desk Contributors</developer_name>
+  <launchable type="desktop-id">com.shipdesk.app.desktop</launchable>
+  <description>
+    <p>
+      Ship Desk is a quiet macOS desk app for chatting with an agent, editing a project folder,
+      previewing locally or on Vercel, and one-click shipping to production.
+    </p>
+  </description>
+  <url type="homepage">https://github.com/sharadvc/ship-desk</url>
+  <url type="bugtracker">https://github.com/sharadvc/ship-desk/issues</url>
+  <releases>
+    <release version="0.1.0" />
+  </releases>
+</component>

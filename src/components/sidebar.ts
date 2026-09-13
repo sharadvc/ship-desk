@@ -4511,7 +4511,7 @@ export class Sidebar {
 					: html`
 						<div class="sidebar-mode-row">
 							<div class="sidebar-mode-meta">
-								<div class="sidebar-mode-current">${this.mode === "projects" ? "Sessions" : "Files"}</div>
+								<div class="sidebar-mode-current">${this.mode === "projects" ? "Threads" : "Files"}</div>
 								<div class="sidebar-mode-switch">
 									${this.renderModeSwitch()}
 								</div>
