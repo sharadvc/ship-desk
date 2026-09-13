@@ -322,7 +322,7 @@ pub async fn vercel_ship_project(
         state.provider = "Vercel".to_string();
         if let Some(live) = url.clone() {
             state.status = "Ready".to_string();
-            state.live_url = Some(live);
+            state.live_url = Some(live.clone());
             state.preview_url = Some(live);
             state.last_error = None;
             state.last_deployed_at = Some(now_ms());
